@@ -328,7 +328,6 @@ subroutine Time_problem(S,D,E,H,Q,Sop,Top,I,T,dT)  !result(alfa,alfat) ! [alfa,a
   !print*, norm2(S), norm2(D), norm2(E)
   !print*, A11, A10, A00
   !stop
-  !print*, "NEEEPEEE   1"
 
   !print*, norm2(Q(:,:,:,200))
   !print*, shape(reshape( Q, (/size(Q)/I%Tngpt,I%Tngpt/)  ))
@@ -343,7 +342,6 @@ subroutine Time_problem(S,D,E,H,Q,Sop,Top,I,T,dT)  !result(alfa,alfat) ! [alfa,a
   Dg = spread( reshape(D, (/siz(1),siz(2),siz(3)/) ) ,4,I%Tngpt)
   Eg = spread( reshape(E, (/siz(1),siz(2),siz(3)/) ) ,4,I%Tngpt)
 
-  !print*, "NEEEPEEE   2", shape(spread( reshape(S, (/siz(1),siz(2),siz(3)/) ) ,4,I%Tngpt))
 
   !print*, "HASTA AQUI" ,shape(Sop%IntS*reshape( (Sg*Q), (/size(Q)/I%Tngpt,I%Tngpt/)  ))
 
@@ -448,7 +446,6 @@ subroutine Time_problem(S,D,E,H,Q,Sop,Top,I,T,dT)  !result(alfa,alfat) ! [alfa,a
   !call plot(Fti(:,1))
   !stop
   !
-  !print*, "QUE PASA?"
   !print*, Top%IDvtc(:,1), Top%IDvtc(:,2), Top%IDvtc(:,I%NT)
   !stop
 
@@ -469,8 +466,6 @@ subroutine Time_problem(S,D,E,H,Q,Sop,Top,I,T,dT)  !result(alfa,alfat) ! [alfa,a
   !call plot(alfa_fem(:,1))
   !stop
 
-  ! CORRECTO HASTA ACA!
-  !!!!!!!!!!
 
 
 
@@ -492,7 +487,6 @@ subroutine Time_problem(S,D,E,H,Q,Sop,Top,I,T,dT)  !result(alfa,alfat) ! [alfa,a
 
   alfacc=reshape( alfac,  (/I%Nsft,I%NT/) )
 
-  !print*, "STRANGE VALUE max"
   !print*, maxval(alfacc)
   !call plot(reshape(alfacc, (/size(alfac)/) ))
 
@@ -507,14 +501,13 @@ subroutine Time_problem(S,D,E,H,Q,Sop,Top,I,T,dT)  !result(alfa,alfat) ! [alfa,a
 
   allocate( oper( I%ngpt,I%Nsft ) )
   oper = transpose(Top%valfa)
+  
   !call show(oper)
-  !print*, "NEPE"
   !print*, reshape(alfac2, (/size(alfac2)/) )
   !call plot(reshape(alfacc, (/size(alfacc)/) ))
   !stop
   !alfae = matmul( oper , alfacc )
 
-  !print*, "STRANGE VALUE max"
   !print*, maxval( matmul( oper , alfacc ) )
   !stop
 
