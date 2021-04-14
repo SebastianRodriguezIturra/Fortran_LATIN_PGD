@@ -16,6 +16,7 @@ program main
 
   implicit none
 
+  real :: start, finish
 
   ! Solution fields:
   double precision, dimension(:,:), allocatable :: U ! Displacement.
@@ -38,6 +39,8 @@ program main
   integer :: nL = 0 ! Latin iteration
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  call cpu_time(start)
 
   print*, (' ')
   print*, (' ')
@@ -106,11 +109,12 @@ program main
       if (I%PGD_eval) then !(.true.) then
         ! Calculate the error of the solver:
         LATIN_error= indicator1(G,L)
-        print*, "LATIN ERROR:" , LATIN_error, "ITERATION:", nL
+        print*, "LATIN ERROR [%]:" , LATIN_error, "ITERATION:", nL
       end if
 
   end do
 
+  print*, " "
   print*, "PROBLEM CONVERGED."
 
   nelm = I%Nx ! Element chose to plot.
@@ -119,6 +123,8 @@ program main
   call plot(plot_vec)
 
 
+  call cpu_time(finish)
+  print '("RESOLUTION TIME = ",f6.3," seconds.")', finish-start
 
   !!$OMP END PARALLEL
 
