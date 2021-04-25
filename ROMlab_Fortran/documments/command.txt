@@ -1,0 +1,15 @@
+% to compile a sigle file:
+gfortran -o hello hello.f90
+
+% Activate warnings: (to see waste variables, unused, etc):
+gfortran -Wall -o hello hello.f90
+
+
+% Optimization level 3: (run faster the code):
+gfortran -O3 -Wall -o hello hello.f90
+
+% Compiling a module that is used in a main program
+gfortran -o result_mod f_module.f03 function_values.f03
+
+% Compile but not link with other program:
+gfortran -o f_module.o -c f_module.f90
