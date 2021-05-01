@@ -5,7 +5,8 @@ module global_stage
   use Matrix_op
   use local_stage
   !use local_stage_vec
-  use Elastic_sol
+  !use Elastic_sol
+  use Elastic_sol_PGD
   use bar
   use Time_matrices
 

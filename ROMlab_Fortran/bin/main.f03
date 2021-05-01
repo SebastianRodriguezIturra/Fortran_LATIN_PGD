@@ -6,7 +6,8 @@ program main
   use gnuplot_fortran
   use bar
   use Time_matrices
-  use Elastic_sol
+  !use Elastic_sol
+  use Elastic_sol_PGD
   use global_stage
   use local_stage
   !use local_stage_vec
@@ -66,8 +67,8 @@ program main
 
   !!$OMP PARALLEL
 
-  call solve_init(I,Sop)  ! Creation of Elast and solve of the initial elastic problem.
-
+  !call solve_init(I,Sop)  ! Creation of Elast and solve of the initial elastic problem.
+  call solve_init_PGD(I,Sop,Top)  ! Creation of Elast and solve of the initial elastic problem.
 
   ! Initialization of the LATIN iterations:
   LATIN_error = 100
