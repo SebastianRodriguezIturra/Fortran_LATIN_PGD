@@ -1,4 +1,4 @@
-module Elastic_sol
+module NR_module
 
 
 use Structure
@@ -9,22 +9,22 @@ use gnuplot_fortran
 implicit none
 
 
-  type :: Init_sol
+  type :: NR_struct
 
     double precision, dimension(:,:), allocatable :: U
     double precision, dimension(:,:,:,:), allocatable :: sigma,eps
     double precision, dimension(:,:), allocatable :: Mss,Kss,ChKss
 
 
-  end type Init_sol
+  end type NR_struct
 
-  type(Init_sol) :: Elast
+  type(NR_struct) :: NR
 
 
 
 contains
 
-subroutine solve_init(I,Sop)
+subroutine NR_solver(I,Sop)
 
     type(Input), intent(in) :: I
     type(Space_op), intent(in) :: Sop
@@ -51,7 +51,7 @@ subroutine solve_init(I,Sop)
 
     ! Assembly:
     do ielm = 1, I%Nx
-       M( Sop%Idvs(:,ielm) , Sop%Idvs(:,ielm)  ) = M( Sop%Idvs(:,ielm) , Sop%Idvs(:,ielm) ) + Sop%Melm
+       !M( Sop%Idvs(:,ielm) , Sop%Idvs(:,ielm)  ) = M( Sop%Idvs(:,ielm) , Sop%Idvs(:,ielm) ) + Sop%Melm
        K( Sop%Idvs(:,ielm) , Sop%Idvs(:,ielm)  ) = K( Sop%Idvs(:,ielm) , Sop%Idvs(:,ielm) ) + Sop%Kelm
     end do
 
@@ -75,10 +75,6 @@ subroutine solve_init(I,Sop)
     Fud=matmul(Kud,Ud) ! Force due to the imposition of displacements.
 
 
-
-
-
-
     !! Classic solution (code Seba):
 
     if (.false.) then
@@ -95,23 +91,9 @@ subroutine solve_init(I,Sop)
       x = -Fud
       call dgesv(ns,nrhs,Kss,lda,ipiv,x,ldb,info)
       Us = x
-      !print*, "info:"
-      !print*, info
 
     end if
 
-    ! Plots of the solution:
-    !vect = Us(5,:)
-    !call plot(vect)
-    !!call plot(incr(1,10))
-
-    !print*, "Reshape of the multi-dimnsional vector:"
-    !print*, shape( reshape(Us, (/ size(Us), 1 /) ) )
-
-    !print*, "norm2 value:"
-    !print*, norm2(Us)
-    !print*, shape(Us)
-    !call show(Us)
 
     U(Sop%dof_free,:) = Us
     eps = matmul(Sop%B,U)
@@ -139,9 +121,9 @@ subroutine solve_init(I,Sop)
 
 
 
-  end subroutine solve_init
+  end subroutine NR_solver
 
 
 
 
-end module Elastic_sol
+end module NR_module

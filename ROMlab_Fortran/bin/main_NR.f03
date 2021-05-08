@@ -1,19 +1,13 @@
-program main
+program main_NR
 
   USE OMP_LIB
   use Structure
   use Matrix_op
   use gnuplot_fortran
   use bar
-  use Time_matrices
-  !use Elastic_sol
-  use Elastic_sol_PGD
-  use global_stage
-  use local_stage
-  !use local_stage_vec
-  use LATIN_indicator
+  use NR_module
+  use local_stage_NR
 
-  !include 'solver.f03' !use funcion
 
   implicit none
 
@@ -57,82 +51,38 @@ program main
   print*, (' ')
 
 
-  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+  print*, "NEWTON RAPHSON SOLVER"
+
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
   call Input_assign  ! Constructor of the structure "I"
   call Time_op_assign(I) ! Constructor of the structure "Top"
   call Space_elm_matrices(I)  ! Creation of structure Sop (containing the space elemental matrices)
 
-  !!$OMP PARALLEL
 
-  !call solve_init(I,Sop)  ! Creation of Elast and solve of the initial elastic problem.
-  call solve_init_PGD(I,Sop,Top)  ! Creation of Elast and solve of the initial elastic problem.
-
-  ! Initialization of the LATIN iterations:
-  LATIN_error = 100
-
-  call assign_elastic(Elast,I) ! Assignation of the elastic solution to the global_stage quantities.
-
-  !call local_stage_vp(I,Sop,G%sigma)
-  allocate( plot_vec( I%Tngpt )  ) ! vector used to plot.
+  ! NR solver:
+  call NR_solver(Top,Sop,L,I)
 
 
 
-  do while (I%LATIN_error_min <= LATIN_error )
-
-
-      nL = nL + 1
-
-      ! Local stage:
-      call local_stage_vp(I,Sop,G%sigma)
-      !call local_stage_vp_vec(I,Sop,G%sigma)
-
-
-      !! TEST PLOTS
-
-        !print*, L%d_Ep
-        nelm = 100 ! Element chose to plot.
-        plot_vec = reshape( L%d_Ep(1,1,nelm,:) , (/I%Tngpt/) )  ! Plastic deformation
-        !plot_vec = reshape( Elast%sigma(1,1,nelm,:) , (/I%Tngpt/) )   ! stress Elastic solution
-        !call plot(plot_vec)
-        !stop
-        !print*, (maxval(plot_vec,1))
-        !print*, I%ks
-
-     !! TEST PLOTS
-
-      ! Global stage:
-      call global_stage_vp(Elast,Top,Sop,L,I,nL)
-
-
-      if (I%PGD_eval) then !(.true.) then
-        ! Calculate the error of the solver:
-        LATIN_error= indicator1(G,L)
-        print*, "LATIN ERROR [%]:" , LATIN_error, "ITERATION:", nL
-      end if
-
-  end do
 
   print*, " "
   print*, "PROBLEM CONVERGED."
 
+
+
+  allocate( plot_vec( I%Tngpt )  ) ! vector used to plot.
   nelm = I%Nx ! Element chose to plot.
   plot_vec = reshape( L%d_Ep(1,1,nelm,:) , (/I%Tngpt/) )  ! Plastic deformation
   !plot_vec = reshape( Elast%sigma(1,1,nelm,:) , (/I%Tngpt/) )   ! stress Elastic solution
   call plot(plot_vec)
-
-
   call cpu_time(finish)
   print '("RESOLUTION TIME = ",f6.3," seconds.")', finish-start
 
-  !!$OMP END PARALLEL
-
-  !v = linspace(0.D0,10.D0,5)
 
 
 
 
-
-end program main
+end program main_NR
