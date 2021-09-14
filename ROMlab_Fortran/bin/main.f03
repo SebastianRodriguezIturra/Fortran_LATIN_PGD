@@ -131,7 +131,9 @@ program main
   print*, "PROBLEM CONVERGED."
 
   call cpu_time(finish)
-  print '("RESOLUTION TIME = ",f6.3," seconds.")', finish-start
+  !print '("RESOLUTION TIME = ",f6.3," seconds.")', finish-start
+  
+  print '("RESOLUTION TIME = ",f12.3," seconds.")', finish-start
 
   !!$OMP END PARALLEL
 
